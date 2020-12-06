@@ -11,7 +11,7 @@ import javafx.scene.Parent;
   */
 public class SmartHomeSimulator extends Application{
     public static void main(String[] args) {
-            launch(args);
+        launch(args);
 	}
 	/**
      * Launch the dashboard of the simulator.
@@ -21,11 +21,15 @@ public class SmartHomeSimulator extends Application{
 	@Override
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/com/simulator/view/Dashboard.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simulator/view/Dashboard.fxml"));
+        Parent root = loader.load();
         Scene rootScene = new Scene(root);
         primaryStage.setScene(rootScene);
         primaryStage.setTitle("Smart Home Simulator");
         primaryStage.show();
+
+        SmartHomeSimulatorController controller = loader.getController();
+        primaryStage.setOnCloseRequest(e -> controller.stopTimer());
     
     }
 }

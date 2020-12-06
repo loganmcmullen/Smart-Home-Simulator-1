@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Profile
 {
-    private List<Observer> observers = new ArrayList<Observer>();
+    private List<SimulationObserver> observers = new ArrayList<SimulationObserver>();
     private String name;
     private USER_TYPE user_type;
     private Room currentRoom;
@@ -80,7 +80,7 @@ public class Profile
      * Add an observer to the list of observers
      * @param observer
      */
-    public void attach(Observer observer){
+    public void attach(SimulationObserver observer){
         observers.add(observer);		
      }
 
@@ -96,7 +96,7 @@ public class Profile
      * Notify all observers
      */
     public void notifyAllObservers(){
-        for (Observer observer : observers) {
+        for (SimulationObserver observer : observers) {
            observer.updateLocation(this);
         }
      } 

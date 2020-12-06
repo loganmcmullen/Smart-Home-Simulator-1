@@ -13,6 +13,10 @@ public class Room {
     private List<Window> windows;
     private List<Light> lights;
     private MotionSensor motionSensors;
+    private Temperature temperatureSettings;
+    private boolean belongsToZone = false;
+    private boolean overriddenTemperature = false;
+    private boolean currentStateHVAC = false;
 
     public Room(String newName, String ID){
         this.id =  ID;
@@ -20,8 +24,12 @@ public class Room {
         this.doors = new ArrayList<>();
         this.windows = new ArrayList<>();
         this.lights = new ArrayList<>();
+        this.temperatureSettings = new Temperature();
     }
 
+    public void resetTemperature(double temperature){
+        this.temperatureSettings.setAllTemperature(temperature);
+    }
     
     /** 
      * Add a new door with the name of the door included
@@ -55,6 +63,12 @@ public class Room {
         return 0;
     }
 
+    public void setBelongsToZone(boolean belongsToZone){
+        this.belongsToZone = belongsToZone;
+    }
+    public boolean getBelongsToZone(){
+        return this.belongsToZone;
+    }
     
     /** 
      * Add new motion sensors
@@ -91,6 +105,23 @@ public class Room {
      */
     public String getName() {
         return name;
+    }
+    public void setName(String newName){name=newName;}
+
+    public void setOverridden(boolean isOvveride){
+        this.overriddenTemperature = isOvveride;
+    }
+    
+    public boolean getOverridden(){
+        return this.overriddenTemperature;
+    }
+        
+    /** 
+     * Get the temperature of the room
+     * @return int 
+     */
+    public Temperature getTemperature() {
+        return this.temperatureSettings;
     }
 
 
@@ -205,6 +236,17 @@ public class Room {
         }
         return windowsListString;
     }
+    
+    
+    /** 
+     * Get a list of the windows
+     * @return List<Window>
+     */
+    public void openAllWindows(){
+        for(Window window : this.windows){
+            window.setOpen();
+        }
+    }
 
     /**
      * Turn on all lights in the room that are set to auto
@@ -216,6 +258,15 @@ public class Room {
         }
     }
 
+    public void setCurrentStateHVAC(boolean currentStateHVAC){
+        this.currentStateHVAC = currentStateHVAC;
+    }
+    
+    
+    public boolean getCurrentStateHVAC(){
+        return this.currentStateHVAC;
+    }
+
     /**
      * turn off all lights in room that are set to auto
      */
@@ -223,6 +274,27 @@ public class Room {
         for (Light l : lights) {
             if(l.getAuto())
                 l.setToOff();
+        }
+    }
+
+    public void updateTemperature(double outdoorTemperature){
+        double currentTemp = this.temperatureSettings.getCurrentTemperature();
+        double targetTemp = this.temperatureSettings.getTemperatureTarget();
+        if(this.currentStateHVAC){
+            if(targetTemp > currentTemp){
+                this.temperatureSettings.setCurrentTemperature(currentTemp + 0.1);
+            }
+            else if(targetTemp < currentTemp){ 
+                this.temperatureSettings.setCurrentTemperature(currentTemp - 0.1);
+            }
+        }
+        else{
+            if(outdoorTemperature > currentTemp){
+                this.temperatureSettings.setCurrentTemperature(currentTemp + 0.05);
+            }
+            else if(outdoorTemperature < currentTemp){ 
+                this.temperatureSettings.setCurrentTemperature(currentTemp - 0.05);
+            }
         }
     }
 }

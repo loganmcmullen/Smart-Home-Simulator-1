@@ -55,6 +55,10 @@ public class House {
         return 0;
     }
 
+    public void renameRoom(String roomToBeRenamedString, String newNameString){
+        getRoomByName(roomToBeRenamedString).setName(newNameString);
+    }
+
     public List<Room> getRooms()
     {
         return this.rooms;
@@ -169,7 +173,7 @@ public class House {
      */
     public Room getRoomByName(String targetName) {
         for (Room r : rooms) {
-            if (r.getName().equals(targetName)) {
+            if (r.getName().contains(targetName)) {
                 return r;
             }
         }
@@ -197,8 +201,8 @@ public class House {
      * return a list of all the names of the rooms
      * @return List<String>
      */
-    public List<String> getRoomsNameList(){
-        List<String> roomsListString = new ArrayList<String>();
+    public ArrayList<String> getRoomsNameList(){
+        ArrayList<String> roomsListString = new ArrayList<String>();
         for(int i=0; i<rooms.size(); ++i){
             roomsListString.add(rooms.get(i).getName());
         }
